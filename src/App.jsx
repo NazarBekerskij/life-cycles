@@ -1,32 +1,55 @@
-import './App.css'
-import { Component } from 'react'
+import "./App.css";
+import { Component } from "react";
 
-import Modal from './components/Modal/Modal'
-import Button from './components/Button/Button'
+import Modal from "./components/Modal/Modal";
+import Button from "./components/Button/Button";
+import Title from "./components/Title/Title";
 
 class App extends Component {
   state = {
-    isModal: false
+    isModal: false,
+    name: "",
+  };
+
+  componentDidMount() {
+    const userName = localStorage.getItem("name");
+
+
+    this.setState({
+      name: userName || ""
+    })
   }
+
+  componentDidUpdate(_, prev) {
+    if (prev.name !== this.state.name) {
+      localStorage.setItem("name", this.state.name);
+    }
+  }
+
+  handleName = (text) => {
+    this.setState({
+      name: text,
+    });
+  };
 
   toggleModal = () => {
     this.setState((prev) => ({
-      isModal: !prev.isModal
-    }))
-  }
+      isModal: !prev.isModal,
+    }));
+  };
 
-
-  render(){
-    const {isModal} = this.state
-    return(
+  render() {
+    const { isModal } = this.state;
+    return (
       <>
-      <Button openModal={this.toggleModal}/>
-      {isModal &&  <Modal closeModal={this.toggleModal}/>}
-   
+        {!this.state.name ? <Button openModal={this.toggleModal}/> : null}
+        <Title name={this.state.name} />
+        {isModal && (
+          <Modal closeModal={this.toggleModal} onName={this.handleName} />
+        )}
       </>
-    )
+    );
   }
 }
 
-
-export default App
+export default App;
